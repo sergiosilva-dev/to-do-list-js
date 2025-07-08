@@ -1,0 +1,24 @@
+/* 
+Autor: Sergio Silva
+Fecha: 2025-07-07
+Descripción: Estilos base para el proyecto To-Do List sin frameworks.
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
