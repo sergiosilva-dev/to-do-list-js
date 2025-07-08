@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sergiosilva-dev.github.io/to-do-list/sitemap.xml

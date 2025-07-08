@@ -1,0 +1,15 @@
+# Dependencias y compilados
+node_modules/
+dist/
+.build/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Configuración local
+.vscode/
+.env
+
+# Archivos temporales
+*.log
