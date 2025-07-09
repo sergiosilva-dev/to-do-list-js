@@ -19,11 +19,23 @@ document.addEventListener("DOMContentLoaded", () => {
   formTarea.addEventListener("submit", (e) => {
     e.preventDefault();
     const texto = inputTarea.value.trim();
-    if (texto !== "") {
-      agregarTarea(texto);
-      inputTarea.value = "";
-      guardarTareas();
-      actualizarContador();
+
+    if (texto === "") {
+      inputTarea.classList.add("input-error");
+      inputTarea.focus();
+      return;
+    }
+
+    inputTarea.classList.remove("input-error");
+    agregarTarea(texto);
+    inputTarea.value = "";
+    guardarTareas();
+  });
+
+  // Evento: Limpiar el campo de entrada al hacer clic
+  inputTarea.addEventListener("input", () => {
+    if (inputTarea.classList.contains("input-error")) {
+      inputTarea.classList.remove("input-error");
     }
   });
 
