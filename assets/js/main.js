@@ -55,9 +55,12 @@ document.addEventListener("DOMContentLoaded", () => {
     btnEliminar.setAttribute("aria-label", "Eliminar tarea");
 
     btnEliminar.addEventListener("click", () => {
-      nuevaTarea.remove();
-      guardarTareas();
-      actualizarContador();
+      nuevaTarea.classList.add("eliminando");
+      setTimeout(() => {
+        nuevaTarea.remove();
+        guardarTareas();
+        actualizarContador();
+      }, 300); // tiempo debe coincidir con la duración de la transición
     });
 
     // Evento: Marcar como completada al hacer clic
@@ -100,6 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
     nuevaTarea.appendChild(spanTexto);
     nuevaTarea.appendChild(btnEliminar);
     listaTareas.appendChild(nuevaTarea);
+    // Animación de entrada con retraso mínimo para permitir transición
+    setTimeout(() => {
+      nuevaTarea.classList.add("animada");
+    }, 10);
   }
 
   // Función: Guardar tareas en Local Storage

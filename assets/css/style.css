@@ -173,3 +173,22 @@ ul {
   border: 2px solid #e74c3c;
   box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
 }
+
+/* Animación al agregar tarea */
+.tarea {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.tarea.animada {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animación al eliminar tarea */
+.tarea.eliminando {
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+}
