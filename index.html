@@ -25,14 +25,15 @@ Descripción: Estructura base del proyecto To-Do List sin frameworks (HTML, CSS,
 <body>
     <main>
         <div class="container">
-            <h1>To-Do List</h1>
-            <form id="form-tarea">
-                <input type="text" id="input-tarea" placeholder="Escribe una nueva tarea..." />
-                <button type="submit">Agregar</button>
+            <h1 id="titulo">To-Do List sin frameworks</h1>
+            <form id="form-tarea" aria-labelledby="titulo" role="form">
+                <input type="text" id="input-tarea" placeholder="Escribe una nueva tarea..."
+                    aria-label="Campo para nueva tarea" required />
+                <button type="submit" aria-label="Agregar tarea">Agregar</button>
             </form>
 
             <div id="acciones-tareas">
-                <span id="contador">0 tareas pendientes</span>
+                <p id="contador" aria-live="polite"></p>
                 <div class="filtros">
                     <button data-filtro="todas" class="activo">Todas</button>
                     <button data-filtro="pendientes">Pendientes</button>
@@ -41,9 +42,7 @@ Descripción: Estructura base del proyecto To-Do List sin frameworks (HTML, CSS,
                 <button id="borrar-todas">🧹 Borrar todas</button>
             </div>
 
-            <ul id="lista-tareas">
-                <!-- Las tareas se agregarán aquí dinámicamente -->
-            </ul>
+            <ul id="lista-tareas" aria-live="polite" role="list" tabindex="0"></ul>
         </div>
     </main>
 

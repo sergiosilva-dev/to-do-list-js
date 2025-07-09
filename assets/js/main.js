@@ -43,11 +43,27 @@ document.addEventListener("DOMContentLoaded", () => {
   function agregarTarea(texto, completada = false) {
     const nuevaTarea = document.createElement("li");
     nuevaTarea.classList.add("tarea");
+    nuevaTarea.setAttribute("role", "listitem");
+    nuevaTarea.setAttribute("tabindex", "0");
+    nuevaTarea.setAttribute(
+      "aria-label",
+      completada ? `Tarea completada: ${texto}` : `Tarea pendiente: ${texto}`
+    );
     if (completada) nuevaTarea.classList.add("completada");
 
     const spanTexto = document.createElement("span");
     spanTexto.textContent = texto;
     spanTexto.classList.add("texto-tarea");
+    spanTexto.setAttribute("role", "button");
+    spanTexto.setAttribute("tabindex", "0");
+    spanTexto.setAttribute("aria-pressed", completada ? "true" : "false");
+    spanTexto.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        nuevaTarea.classList.toggle("completada");
+        guardarTareas();
+      }
+    });
 
     const btnEliminar = document.createElement("button");
     btnEliminar.textContent = "🗑️";
