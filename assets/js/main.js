@@ -51,6 +51,37 @@ document.addEventListener("DOMContentLoaded", () => {
       guardarTareas();
     });
 
+    // Editar tarea al hacer doble clic
+    spanTexto.addEventListener("dblclick", () => {
+      const textoActual = spanTexto.textContent;
+      const inputEdit = document.createElement("input");
+      inputEdit.type = "text";
+      inputEdit.value = textoActual;
+      inputEdit.classList.add("input-edicion");
+
+      nuevaTarea.replaceChild(inputEdit, spanTexto);
+      inputEdit.focus();
+
+      // Guardar nuevo texto al perder foco o presionar Enter
+      const guardarEdicion = () => {
+        const nuevoTexto = inputEdit.value.trim();
+        if (nuevoTexto !== "") {
+          spanTexto.textContent = nuevoTexto;
+          nuevaTarea.replaceChild(spanTexto, inputEdit);
+          actualizarLocalStorage(); // si tienes localStorage
+        } else {
+          // Si el campo queda vacío, se elimina la tarea
+          nuevaTarea.remove();
+          actualizarLocalStorage();
+        }
+      };
+
+      inputEdit.addEventListener("blur", guardarEdicion);
+      inputEdit.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") guardarEdicion();
+      });
+    });
+
     nuevaTarea.appendChild(spanTexto);
     nuevaTarea.appendChild(btnEliminar);
     listaTareas.appendChild(nuevaTarea);
@@ -129,3 +160,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("DOMContentLoaded", actualizarContador);
 });
+
+// Función para actualizar el Local Storage con las tareas actuales
+function actualizarLocalStorage() {
+  const tareas = [];
+  document.querySelectorAll(".tarea").forEach((tarea) => {
+    const texto = tarea.querySelector(".texto-tarea").textContent;
+    const completada = tarea.classList.contains("completada");
+    tareas.push({ texto, completada });
+  });
+  localStorage.setItem("tareas", JSON.stringify(tareas));
+}

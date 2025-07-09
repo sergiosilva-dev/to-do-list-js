@@ -159,3 +159,12 @@ ul {
 #borrar-todas:hover {
   background-color: #c9302c;
 }
+
+.input-edicion {
+  width: 100%;
+  font-size: 16px;
+  padding: 6px;
+  border: 2px solid #007bff;
+  border-radius: 6px;
+  font-family: inherit;
+}
