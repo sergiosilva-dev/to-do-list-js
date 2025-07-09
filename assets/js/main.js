@@ -1,11 +1,9 @@
 //
 // Autor: Sergio Silva
-// Fecha: 2025-07-07
+// Fecha: 2025-07-09
 // Descripción: Archivo JavaScript principal para la lógica del CRUD de la To-Do List sin frameworks.
 //
 
-// Este archivo maneja la creación, eliminación y almacenamiento de tareas en una lista de pendientes.
-// Utiliza Local Storage para persistir las tareas entre recargas de página.
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📌 To-Do List iniciada correctamente");
 
@@ -13,20 +11,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const formTarea = document.getElementById("form-tarea");
   const inputTarea = document.getElementById("input-tarea");
   const listaTareas = document.getElementById("lista-tareas");
+  const contador = document.getElementById("contador");
+  const btnBorrarTodas = document.getElementById("borrar-todas");
+  const botonesFiltro = document.querySelectorAll(".filtros button");
 
-  // Manejo del evento de envío del formulario
+  // Evento: Envío del formulario para agregar tarea
   formTarea.addEventListener("submit", (e) => {
     e.preventDefault();
     const texto = inputTarea.value.trim();
-
     if (texto !== "") {
       agregarTarea(texto);
       inputTarea.value = "";
       guardarTareas();
+      actualizarContador();
     }
   });
 
-  // Función para agregar una nueva tarea a la lista
+  // Función: Agrega una tarea al DOM
   function agregarTarea(texto, completada = false) {
     const nuevaTarea = document.createElement("li");
     nuevaTarea.classList.add("tarea");
@@ -44,14 +45,17 @@ document.addEventListener("DOMContentLoaded", () => {
     btnEliminar.addEventListener("click", () => {
       nuevaTarea.remove();
       guardarTareas();
+      actualizarContador();
     });
 
+    // Evento: Marcar como completada al hacer clic
     spanTexto.addEventListener("click", () => {
       nuevaTarea.classList.toggle("completada");
       guardarTareas();
+      actualizarContador();
     });
 
-    // Editar tarea al hacer doble clic
+    // Evento: Editar tarea al hacer doble clic
     spanTexto.addEventListener("dblclick", () => {
       const textoActual = spanTexto.textContent;
       const inputEdit = document.createElement("input");
@@ -62,18 +66,17 @@ document.addEventListener("DOMContentLoaded", () => {
       nuevaTarea.replaceChild(inputEdit, spanTexto);
       inputEdit.focus();
 
-      // Guardar nuevo texto al perder foco o presionar Enter
       const guardarEdicion = () => {
         const nuevoTexto = inputEdit.value.trim();
         if (nuevoTexto !== "") {
           spanTexto.textContent = nuevoTexto;
           nuevaTarea.replaceChild(spanTexto, inputEdit);
-          actualizarLocalStorage(); // si tienes localStorage
+          guardarTareas();
         } else {
-          // Si el campo queda vacío, se elimina la tarea
           nuevaTarea.remove();
-          actualizarLocalStorage();
+          guardarTareas();
         }
+        actualizarContador();
       };
 
       inputEdit.addEventListener("blur", guardarEdicion);
@@ -87,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     listaTareas.appendChild(nuevaTarea);
   }
 
-  // Funciones para guardar y cargar tareas desde Local Storage
+  // Función: Guardar tareas en Local Storage
   function guardarTareas() {
     const tareas = [];
     document.querySelectorAll(".tarea").forEach((tarea) => {
@@ -98,27 +101,25 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("tareas", JSON.stringify(tareas));
   }
 
-  // Cargar tareas desde Local Storage al iniciar la aplicación
+  // Función: Cargar tareas desde Local Storage
   function cargarTareas() {
     const tareasGuardadas = JSON.parse(localStorage.getItem("tareas")) || [];
     tareasGuardadas.forEach(({ texto, completada }) => {
       agregarTarea(texto, completada);
     });
+    actualizarContador();
   }
 
-  // Cargar tareas al iniciar la aplicación
-  cargarTareas();
-
+  // Función: Actualizar contador de tareas pendientes
   function actualizarContador() {
     const tareas = document.querySelectorAll(".tarea");
     const pendientes = Array.from(tareas).filter(
       (t) => !t.classList.contains("completada")
     );
-    document.getElementById(
-      "contador"
-    ).textContent = `${pendientes.length} tareas pendientes`;
+    contador.textContent = `${pendientes.length} tareas pendientes`;
   }
 
+  // Función: Aplicar filtros (Todas, Pendientes, Completadas)
   function aplicarFiltro(tipo) {
     const tareas = document.querySelectorAll(".tarea");
     tareas.forEach((t) => {
@@ -139,35 +140,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  document.getElementById("lista-tareas").addEventListener("click", () => {
-    actualizarContador();
-  });
-
-  document.querySelectorAll(".filtros button").forEach((btn) => {
+  // Evento: Filtros
+  botonesFiltro.forEach((btn) => {
     btn.addEventListener("click", () => {
-      document
-        .querySelectorAll(".filtros button")
-        .forEach((b) => b.classList.remove("activo"));
+      botonesFiltro.forEach((b) => b.classList.remove("activo"));
       btn.classList.add("activo");
       aplicarFiltro(btn.dataset.filtro);
     });
   });
 
-  document.getElementById("borrar-todas").addEventListener("click", () => {
-    document.getElementById("lista-tareas").innerHTML = "";
+  // Evento: Borrar todas las tareas
+  btnBorrarTodas.addEventListener("click", () => {
+    listaTareas.innerHTML = "";
+    guardarTareas();
     actualizarContador();
   });
 
-  document.addEventListener("DOMContentLoaded", actualizarContador);
+  // Inicialización al cargar la página
+  cargarTareas();
 });
-
-// Función para actualizar el Local Storage con las tareas actuales
-function actualizarLocalStorage() {
-  const tareas = [];
-  document.querySelectorAll(".tarea").forEach((tarea) => {
-    const texto = tarea.querySelector(".texto-tarea").textContent;
-    const completada = tarea.classList.contains("completada");
-    tareas.push({ texto, completada });
-  });
-  localStorage.setItem("tareas", JSON.stringify(tareas));
-}
