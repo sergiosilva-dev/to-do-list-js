@@ -4,50 +4,77 @@
 // Descripción: Archivo JavaScript principal para la lógica del CRUD de la To-Do List sin frameworks.
 //
 
+// Este archivo maneja la creación, eliminación y almacenamiento de tareas en una lista de pendientes.
+// Utiliza Local Storage para persistir las tareas entre recargas de página.
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📌 To-Do List iniciada correctamente");
 
-  // Aquí comenzará la lógica de la app
-});
-
-// Funcionalidad: Agregar tarea
-document.addEventListener("DOMContentLoaded", () => {
+  // Selección de elementos del DOM
   const formTarea = document.getElementById("form-tarea");
   const inputTarea = document.getElementById("input-tarea");
   const listaTareas = document.getElementById("lista-tareas");
 
+  // Manejo del evento de envío del formulario
   formTarea.addEventListener("submit", (e) => {
     e.preventDefault();
     const texto = inputTarea.value.trim();
 
     if (texto !== "") {
-      const nuevaTarea = document.createElement("li");
-      nuevaTarea.classList.add("tarea");
-
-      const spanTexto = document.createElement("span");
-      spanTexto.textContent = texto;
-      spanTexto.classList.add("texto-tarea");
-
-      // Botón eliminar
-      const btnEliminar = document.createElement("button");
-      btnEliminar.textContent = "🗑️";
-      btnEliminar.classList.add("btn-eliminar");
-      btnEliminar.setAttribute("aria-label", "Eliminar tarea");
-
-      btnEliminar.addEventListener("click", () => {
-        listaTareas.removeChild(nuevaTarea);
-      });
-
-      // Marcar como completada al hacer click en el texto
-      spanTexto.addEventListener("click", () => {
-        nuevaTarea.classList.toggle("completada");
-      });
-
-      nuevaTarea.appendChild(spanTexto);
-      nuevaTarea.appendChild(btnEliminar);
-
-      listaTareas.appendChild(nuevaTarea);
+      agregarTarea(texto);
       inputTarea.value = "";
+      guardarTareas();
     }
   });
+
+  // Función para agregar una nueva tarea a la lista
+  function agregarTarea(texto, completada = false) {
+    const nuevaTarea = document.createElement("li");
+    nuevaTarea.classList.add("tarea");
+    if (completada) nuevaTarea.classList.add("completada");
+
+    const spanTexto = document.createElement("span");
+    spanTexto.textContent = texto;
+    spanTexto.classList.add("texto-tarea");
+
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "🗑️";
+    btnEliminar.classList.add("btn-eliminar");
+    btnEliminar.setAttribute("aria-label", "Eliminar tarea");
+
+    btnEliminar.addEventListener("click", () => {
+      nuevaTarea.remove();
+      guardarTareas();
+    });
+
+    spanTexto.addEventListener("click", () => {
+      nuevaTarea.classList.toggle("completada");
+      guardarTareas();
+    });
+
+    nuevaTarea.appendChild(spanTexto);
+    nuevaTarea.appendChild(btnEliminar);
+    listaTareas.appendChild(nuevaTarea);
+  }
+
+  // Funciones para guardar y cargar tareas desde Local Storage
+  function guardarTareas() {
+    const tareas = [];
+    document.querySelectorAll(".tarea").forEach((tarea) => {
+      const texto = tarea.querySelector(".texto-tarea").textContent;
+      const completada = tarea.classList.contains("completada");
+      tareas.push({ texto, completada });
+    });
+    localStorage.setItem("tareas", JSON.stringify(tareas));
+  }
+
+  // Cargar tareas desde Local Storage al iniciar la aplicación
+  function cargarTareas() {
+    const tareasGuardadas = JSON.parse(localStorage.getItem("tareas")) || [];
+    tareasGuardadas.forEach(({ texto, completada }) => {
+      agregarTarea(texto, completada);
+    });
+  }
+
+  // Cargar tareas al iniciar la aplicación
+  cargarTareas();
 });
