@@ -23,6 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (texto !== "") {
       const nuevaTarea = document.createElement("li");
       nuevaTarea.textContent = texto;
+      nuevaTarea.classList.add("tarea");
+
+      // Evento para marcar como completada
+      nuevaTarea.addEventListener("click", () => {
+        nuevaTarea.classList.toggle("completada");
+      });
+
       listaTareas.appendChild(nuevaTarea);
       inputTarea.value = "";
     }
