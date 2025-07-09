@@ -22,13 +22,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (texto !== "") {
       const nuevaTarea = document.createElement("li");
-      nuevaTarea.textContent = texto;
       nuevaTarea.classList.add("tarea");
 
-      // Evento para marcar como completada
-      nuevaTarea.addEventListener("click", () => {
+      const spanTexto = document.createElement("span");
+      spanTexto.textContent = texto;
+      spanTexto.classList.add("texto-tarea");
+
+      // Botón eliminar
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "🗑️";
+      btnEliminar.classList.add("btn-eliminar");
+      btnEliminar.setAttribute("aria-label", "Eliminar tarea");
+
+      btnEliminar.addEventListener("click", () => {
+        listaTareas.removeChild(nuevaTarea);
+      });
+
+      // Marcar como completada al hacer click en el texto
+      spanTexto.addEventListener("click", () => {
         nuevaTarea.classList.toggle("completada");
       });
+
+      nuevaTarea.appendChild(spanTexto);
+      nuevaTarea.appendChild(btnEliminar);
 
       listaTareas.appendChild(nuevaTarea);
       inputTarea.value = "";
