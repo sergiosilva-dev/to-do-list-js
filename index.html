@@ -30,6 +30,17 @@ Descripción: Estructura base del proyecto To-Do List sin frameworks (HTML, CSS,
                 <input type="text" id="input-tarea" placeholder="Escribe una nueva tarea..." />
                 <button type="submit">Agregar</button>
             </form>
+
+            <div id="acciones-tareas">
+                <span id="contador">0 tareas pendientes</span>
+                <div class="filtros">
+                    <button data-filtro="todas" class="activo">Todas</button>
+                    <button data-filtro="pendientes">Pendientes</button>
+                    <button data-filtro="completadas">Completadas</button>
+                </div>
+                <button id="borrar-todas">🧹 Borrar todas</button>
+            </div>
+
             <ul id="lista-tareas">
                 <!-- Las tareas se agregarán aquí dinámicamente -->
             </ul>

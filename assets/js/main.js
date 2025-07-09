@@ -77,4 +77,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cargar tareas al iniciar la aplicación
   cargarTareas();
+
+  function actualizarContador() {
+    const tareas = document.querySelectorAll(".tarea");
+    const pendientes = Array.from(tareas).filter(
+      (t) => !t.classList.contains("completada")
+    );
+    document.getElementById(
+      "contador"
+    ).textContent = `${pendientes.length} tareas pendientes`;
+  }
+
+  function aplicarFiltro(tipo) {
+    const tareas = document.querySelectorAll(".tarea");
+    tareas.forEach((t) => {
+      switch (tipo) {
+        case "pendientes":
+          t.style.display = t.classList.contains("completada")
+            ? "none"
+            : "flex";
+          break;
+        case "completadas":
+          t.style.display = t.classList.contains("completada")
+            ? "flex"
+            : "none";
+          break;
+        default:
+          t.style.display = "flex";
+      }
+    });
+  }
+
+  document.getElementById("lista-tareas").addEventListener("click", () => {
+    actualizarContador();
+  });
+
+  document.querySelectorAll(".filtros button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".filtros button")
+        .forEach((b) => b.classList.remove("activo"));
+      btn.classList.add("activo");
+      aplicarFiltro(btn.dataset.filtro);
+    });
+  });
+
+  document.getElementById("borrar-todas").addEventListener("click", () => {
+    document.getElementById("lista-tareas").innerHTML = "";
+    actualizarContador();
+  });
+
+  document.addEventListener("DOMContentLoaded", actualizarContador);
 });
