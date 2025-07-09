@@ -22,3 +22,39 @@ h1 {
   text-align: center;
   margin-bottom: 2rem;
 }
+
+/* Estilos para formulario de tareas */
+.todo-form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+#form-tarea {
+  display: flex;
+  gap: 1rem;
+  max-width: 600px;
+  width: 100%;
+}
+
+#form-tarea input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+#form-tarea button {
+  padding: 0.8rem 1.2rem;
+  background-color: #008cff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#form-tarea button:hover {
+  background-color: #006fcc;
+}

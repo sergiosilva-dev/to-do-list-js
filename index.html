@@ -26,7 +26,18 @@ Descripción: Estructura base del proyecto To-Do List sin frameworks (HTML, CSS,
     <main>
         <h1>To-Do List</h1>
         <section id="todo-app">
-            <!-- Aquí irá la app -->
+            <section class="todo-form">
+                <form id="form-tarea" autocomplete="off">
+                    <input type="text" id="input-tarea" placeholder="Escribe una tarea..." required />
+                    <button type="submit">Agregar</button>
+                </form>
+            </section>
+
+            <section class="todo-lista">
+                <ul id="lista-tareas">
+                    <!-- Las tareas aparecerán aquí -->
+                </ul>
+            </section>
         </section>
     </main>
 

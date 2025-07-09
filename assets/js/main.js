@@ -9,3 +9,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Aquí comenzará la lógica de la app
 });
+
+// Funcionalidad: Agregar tarea
+document.addEventListener("DOMContentLoaded", () => {
+  const formTarea = document.getElementById("form-tarea");
+  const inputTarea = document.getElementById("input-tarea");
+  const listaTareas = document.getElementById("lista-tareas");
+
+  formTarea.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const texto = inputTarea.value.trim();
+
+    if (texto !== "") {
+      const nuevaTarea = document.createElement("li");
+      nuevaTarea.textContent = texto;
+      listaTareas.appendChild(nuevaTarea);
+      inputTarea.value = "";
+    }
+  });
+});
