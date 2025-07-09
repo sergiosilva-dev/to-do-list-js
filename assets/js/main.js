@@ -71,12 +71,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btnEliminar.setAttribute("aria-label", "Eliminar tarea");
 
     btnEliminar.addEventListener("click", () => {
-      nuevaTarea.classList.add("eliminando");
+      nuevaTarea.style.transition = "opacity 0.3s ease";
+      nuevaTarea.style.opacity = "0";
+
       setTimeout(() => {
         nuevaTarea.remove();
         guardarTareas();
         actualizarContador();
-      }, 300); // tiempo debe coincidir con la duración de la transición
+      }, 300);
     });
 
     // Evento: Marcar como completada al hacer clic
