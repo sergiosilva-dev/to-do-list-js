@@ -149,11 +149,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Evento: Borrar todas las tareas
+  // Evento: Borrar todas las tareas con confirmación
   btnBorrarTodas.addEventListener("click", () => {
-    listaTareas.innerHTML = "";
-    guardarTareas();
-    actualizarContador();
+    const confirmacion = confirm(
+      "¿Estás seguro de que deseas borrar todas las tareas?"
+    );
+    if (confirmacion) {
+      listaTareas.innerHTML = "";
+      guardarTareas();
+      actualizarContador();
+    }
   });
 
   // Inicialización al cargar la página
