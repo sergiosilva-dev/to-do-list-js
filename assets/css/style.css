@@ -209,6 +209,14 @@ ul {
   transition: all 0.3s ease;
 }
 
+/* Estilos para la fecha de la tarea */
+.fecha-tarea {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 4px;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

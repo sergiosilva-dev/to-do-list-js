@@ -40,8 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Función: Agrega una tarea al DOM
-  function agregarTarea(texto, completada = false) {
+  function agregarTarea(texto, completada = false, fecha = null) {
     const nuevaTarea = document.createElement("li");
+    const fechaCreacion = fecha || new Date().toLocaleString("es-CO", {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+    nuevaTarea.setAttribute("data-fecha", fechaCreacion);
     nuevaTarea.classList.add("tarea");
     nuevaTarea.setAttribute("role", "listitem");
     nuevaTarea.setAttribute("tabindex", "0");
@@ -64,6 +69,11 @@ document.addEventListener("DOMContentLoaded", () => {
         guardarTareas();
       }
     });
+
+    const spanFecha = document.createElement("span");
+    spanFecha.textContent = fechaCreacion;
+    spanFecha.classList.add("fecha-tarea");
+    nuevaTarea.appendChild(spanFecha);
 
     const btnEliminar = document.createElement("button");
     btnEliminar.textContent = "🗑️";
@@ -133,7 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".tarea").forEach((tarea) => {
       const texto = tarea.querySelector(".texto-tarea").textContent;
       const completada = tarea.classList.contains("completada");
-      tareas.push({ texto, completada });
+      const fecha = tarea.getAttribute("data-fecha"); // <- nueva línea
+      tareas.push({ texto, completada, fecha }); // <- incluir fecha
     });
     localStorage.setItem("tareas", JSON.stringify(tareas));
   }
