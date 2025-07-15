@@ -44,20 +44,18 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validación de longitud mínima y máxima
     if (texto.length < 3 || texto.length > 100) {
-      alert("La tarea debe tener entre 3 y 100 caracteres.");
+      mostrarToast("❌ La tarea debe tener entre 3 y 100 caracteres.");
       inputTarea.classList.add("input-error");
       return;
     }
 
-    // Validación de duplicados
     const tareasActuales = Array.from(
       document.querySelectorAll(".texto-tarea")
     ).map((el) => el.textContent.trim().toLowerCase());
 
     if (tareasActuales.includes(texto.toLowerCase())) {
-      alert("Ya existe una tarea con ese mismo texto.");
+      mostrarToast("⚠️ Ya existe una tarea con ese texto.");
       inputTarea.classList.add("input-error");
       return;
     }
@@ -73,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     inputTarea.classList.remove("input-error");
   });
 
-  // Agregar tarea al DOM
   function agregarTarea(texto, completada = false, fecha = null) {
     const nuevaTarea = document.createElement("li");
     const fechaCreacion =
@@ -152,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => nuevaTarea.classList.add("animada"), 10);
   }
 
-  // Guardar tareas en localStorage
   function guardarTareas() {
     const tareas = [];
     document.querySelectorAll(".tarea").forEach((tarea) => {
@@ -164,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("tareas", JSON.stringify(tareas));
   }
 
-  // Cargar tareas desde localStorage
   function cargarTareas() {
     const tareasGuardadas = JSON.parse(localStorage.getItem("tareas")) || [];
     tareasGuardadas.forEach(({ texto, completada, fecha }) => {
@@ -173,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
     actualizarContador();
   }
 
-  // Contador de tareas pendientes
   function actualizarContador() {
     const pendientes = Array.from(document.querySelectorAll(".tarea")).filter(
       (t) => !t.classList.contains("completada")
@@ -181,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
     contador.textContent = `${pendientes.length} tareas pendientes`;
   }
 
-  // Filtros de tareas
   function aplicarFiltro(tipo) {
     const tareas = document.querySelectorAll(".tarea");
     tareas.forEach((t) => {
@@ -210,7 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Borrar todas las tareas
   btnBorrarTodas.addEventListener("click", () => {
     const confirmacion = confirm(
       "¿Estás seguro de que deseas borrar todas las tareas?"
@@ -222,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Función para exportar como JSON
   document.getElementById("exportar-json").addEventListener("click", () => {
     const tareas = JSON.parse(localStorage.getItem("tareas")) || [];
     const blob = new Blob([JSON.stringify(tareas, null, 2)], {
@@ -237,7 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
     URL.revokeObjectURL(url);
   });
 
-  // Función para exportar como CSV
   document.getElementById("exportar-csv").addEventListener("click", () => {
     const tareas = JSON.parse(localStorage.getItem("tareas")) || [];
     let csv = "Tarea,Completada,Fecha\n";
@@ -281,12 +271,12 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           guardarTareas();
           actualizarContador();
-          alert("✅ Tareas importadas correctamente (JSON)");
+          mostrarToast("✅ Tareas importadas correctamente (JSON)");
         } catch (err) {
-          alert("❌ Error al importar el archivo JSON.");
+          mostrarToast("❌ Error al importar el archivo JSON.");
         }
       } else if (archivo.name.endsWith(".csv")) {
-        const lineas = contenido.trim().split("\n").slice(1); // Saltar cabecera
+        const lineas = contenido.trim().split("\n").slice(1);
         lineas.forEach((linea) => {
           const [texto, completada, fecha] = linea.split(",");
           agregarTarea(
@@ -297,16 +287,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         guardarTareas();
         actualizarContador();
-        alert("✅ Tareas importadas correctamente (CSV)");
+        mostrarToast("✅ Tareas importadas correctamente (CSV)");
       } else {
-        alert("❌ Formato no compatible. Usa .json o .csv");
+        mostrarToast("❌ Formato no compatible. Usa .json o .csv");
       }
 
-      inputArchivo.value = ""; // Reset
+      inputArchivo.value = "";
     };
 
     reader.readAsText(archivo);
   });
+
+  function mostrarToast(mensaje) {
+    const contenedor = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = mensaje;
+    contenedor.appendChild(toast);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
 
   // Inicializar app
   cargarTareas();
