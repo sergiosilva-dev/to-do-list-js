@@ -395,3 +395,19 @@ ul {
     transform: translateX(100%);
   }
 }
+
+.busqueda-tareas {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+#input-busqueda {
+  padding: 0.6rem 1rem;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+}

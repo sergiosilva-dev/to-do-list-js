@@ -332,4 +332,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   cargarTareas();
+
+  const inputBusqueda = document.getElementById("input-busqueda");
+
+  inputBusqueda.addEventListener("input", () => {
+    const texto = inputBusqueda.value.toLowerCase().trim();
+    document.querySelectorAll(".tarea").forEach((tarea) => {
+      const contenido = tarea
+        .querySelector(".texto-tarea")
+        .textContent.toLowerCase();
+      tarea.style.display = contenido.includes(texto) ? "flex" : "none";
+    });
+  });
 });
