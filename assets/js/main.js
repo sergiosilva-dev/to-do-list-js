@@ -257,6 +257,57 @@ document.addEventListener("DOMContentLoaded", () => {
     URL.revokeObjectURL(url);
   });
 
+  const inputArchivo = document.getElementById("archivo-importar");
+  const btnImportar = document.getElementById("btn-importar");
+
+  btnImportar.addEventListener("click", () => {
+    inputArchivo.click();
+  });
+
+  inputArchivo.addEventListener("change", (event) => {
+    const archivo = event.target.files[0];
+    if (!archivo) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const contenido = e.target.result;
+
+      if (archivo.name.endsWith(".json")) {
+        try {
+          const tareasImportadas = JSON.parse(contenido);
+          tareasImportadas.forEach(({ texto, completada, fecha }) => {
+            agregarTarea(texto, completada, fecha);
+          });
+          guardarTareas();
+          actualizarContador();
+          alert("✅ Tareas importadas correctamente (JSON)");
+        } catch (err) {
+          alert("❌ Error al importar el archivo JSON.");
+        }
+      } else if (archivo.name.endsWith(".csv")) {
+        const lineas = contenido.trim().split("\n").slice(1); // Saltar cabecera
+        lineas.forEach((linea) => {
+          const [texto, completada, fecha] = linea.split(",");
+          agregarTarea(
+            texto.replace(/^"|"$/g, "").replace(/""/g, '"'),
+            completada === "true",
+            fecha.replace(/^"|"$/g, "")
+          );
+        });
+        guardarTareas();
+        actualizarContador();
+        alert("✅ Tareas importadas correctamente (CSV)");
+      } else {
+        alert("❌ Formato no compatible. Usa .json o .csv");
+      }
+
+      inputArchivo.value = ""; // Reset
+    };
+
+    reader.readAsText(archivo);
+  });
+
   // Inicializar app
   cargarTareas();
 });
