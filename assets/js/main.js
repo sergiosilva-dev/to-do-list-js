@@ -2,12 +2,13 @@
 // Autor: Sergio Silva
 // Fecha: 2025-07-09
 // Descripción: Archivo JavaScript principal para la lógica del CRUD de la To-Do List sin frameworks.
+// Incluye notificaciones toast y reordenamiento drag & drop.
 //
+// Última actualización: 2025-07-15
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("📌 To-Do List iniciada correctamente");
 
-  // Elementos DOM
   const formTarea = document.getElementById("form-tarea");
   const inputTarea = document.getElementById("input-tarea");
   const listaTareas = document.getElementById("lista-tareas");
@@ -17,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleTema = document.getElementById("toggle-tema");
   const iconoTema = document.getElementById("icono-tema");
 
-  // Inicializar tema desde localStorage
   const temaGuardado = localStorage.getItem("tema");
   if (temaGuardado === "oscuro") {
     document.body.classList.add("tema-oscuro");
@@ -26,14 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
     iconoTema.className = "fas fa-moon";
   }
 
-  // Toggle de tema claro / oscuro
   toggleTema.addEventListener("click", () => {
     const esOscuro = document.body.classList.toggle("tema-oscuro");
     iconoTema.className = esOscuro ? "fas fa-sun" : "fas fa-moon";
     localStorage.setItem("tema", esOscuro ? "oscuro" : "claro");
   });
 
-  // Enviar formulario (Agregar tarea)
   formTarea.addEventListener("submit", (e) => {
     e.preventDefault();
     const texto = inputTarea.value.trim();
@@ -66,22 +64,22 @@ document.addEventListener("DOMContentLoaded", () => {
     guardarTareas();
   });
 
-  // Quitar error al escribir
   inputTarea.addEventListener("input", () => {
     inputTarea.classList.remove("input-error");
   });
 
   function agregarTarea(texto, completada = false, fecha = null) {
     const nuevaTarea = document.createElement("li");
-    const fechaCreacion =
+    nuevaTarea.setAttribute(
+      "data-fecha",
       fecha ||
-      new Date().toLocaleString("es-CO", {
-        dateStyle: "short",
-        timeStyle: "short",
-      });
-
-    nuevaTarea.setAttribute("data-fecha", fechaCreacion);
+        new Date().toLocaleString("es-CO", {
+          dateStyle: "short",
+          timeStyle: "short",
+        })
+    );
     nuevaTarea.classList.add("tarea");
+    nuevaTarea.setAttribute("draggable", true);
     if (completada) nuevaTarea.classList.add("completada");
 
     const spanTexto = document.createElement("span");
@@ -89,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     spanTexto.classList.add("texto-tarea");
 
     const spanFecha = document.createElement("span");
-    spanFecha.textContent = fechaCreacion;
+    spanFecha.textContent = nuevaTarea.getAttribute("data-fecha");
     spanFecha.classList.add("fecha-tarea");
 
     const btnEliminar = document.createElement("button");
@@ -141,11 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    nuevaTarea.appendChild(spanTexto);
-    nuevaTarea.appendChild(spanFecha);
-    nuevaTarea.appendChild(btnEliminar);
-    listaTareas.appendChild(nuevaTarea);
+    nuevaTarea.addEventListener("dragstart", (e) => {
+      nuevaTarea.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+    });
 
+    nuevaTarea.addEventListener("dragend", () => {
+      nuevaTarea.classList.remove("dragging");
+      guardarTareas();
+    });
+
+    nuevaTarea.append(spanTexto, spanFecha, btnEliminar);
+    listaTareas.appendChild(nuevaTarea);
     setTimeout(() => nuevaTarea.classList.add("animada"), 10);
   }
 
@@ -176,8 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function aplicarFiltro(tipo) {
-    const tareas = document.querySelectorAll(".tarea");
-    tareas.forEach((t) => {
+    document.querySelectorAll(".tarea").forEach((t) => {
       switch (tipo) {
         case "pendientes":
           t.style.display = t.classList.contains("completada")
@@ -220,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "tareas.json";
@@ -231,15 +234,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("exportar-csv").addEventListener("click", () => {
     const tareas = JSON.parse(localStorage.getItem("tareas")) || [];
     let csv = "Tarea,Completada,Fecha\n";
-
     tareas.forEach(({ texto, completada, fecha }) => {
       const fila = `"${texto.replace(/"/g, '""')}",${completada},"${fecha}"`;
       csv += fila + "\n";
     });
-
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "tareas.csv";
@@ -257,12 +257,9 @@ document.addEventListener("DOMContentLoaded", () => {
   inputArchivo.addEventListener("change", (event) => {
     const archivo = event.target.files[0];
     if (!archivo) return;
-
     const reader = new FileReader();
-
     reader.onload = (e) => {
       const contenido = e.target.result;
-
       if (archivo.name.endsWith(".json")) {
         try {
           const tareasImportadas = JSON.parse(contenido);
@@ -272,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
           guardarTareas();
           actualizarContador();
           mostrarToast("✅ Tareas importadas correctamente (JSON)");
-        } catch (err) {
+        } catch {
           mostrarToast("❌ Error al importar el archivo JSON.");
         }
       } else if (archivo.name.endsWith(".csv")) {
@@ -291,10 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         mostrarToast("❌ Formato no compatible. Usa .json o .csv");
       }
-
       inputArchivo.value = "";
     };
-
     reader.readAsText(archivo);
   });
 
@@ -304,12 +299,37 @@ document.addEventListener("DOMContentLoaded", () => {
     toast.className = "toast";
     toast.textContent = mensaje;
     contenedor.appendChild(toast);
-
     setTimeout(() => {
       toast.remove();
     }, 3000);
   }
 
-  // Inicializar app
+  listaTareas.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const dragging = document.querySelector(".dragging");
+    const afterElement = getDragAfterElement(listaTareas, e.clientY);
+    if (afterElement == null) {
+      listaTareas.appendChild(dragging);
+    } else {
+      listaTareas.insertBefore(dragging, afterElement);
+    }
+  });
+
+  function getDragAfterElement(container, y) {
+    const draggableElements = [
+      ...container.querySelectorAll(".tarea:not(.dragging)"),
+    ];
+    return draggableElements.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        return offset < 0 && offset > closest.offset
+          ? { offset, element: child }
+          : closest;
+      },
+      { offset: Number.NEGATIVE_INFINITY }
+    ).element;
+  }
+
   cargarTareas();
 });
