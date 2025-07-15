@@ -222,6 +222,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Función para exportar como JSON
+  document.getElementById("exportar-json").addEventListener("click", () => {
+    const tareas = JSON.parse(localStorage.getItem("tareas")) || [];
+    const blob = new Blob([JSON.stringify(tareas, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tareas.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Función para exportar como CSV
+  document.getElementById("exportar-csv").addEventListener("click", () => {
+    const tareas = JSON.parse(localStorage.getItem("tareas")) || [];
+    let csv = "Tarea,Completada,Fecha\n";
+
+    tareas.forEach(({ texto, completada, fecha }) => {
+      const fila = `"${texto.replace(/"/g, '""')}",${completada},"${fecha}"`;
+      csv += fila + "\n";
+    });
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tareas.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
   // Inicializar app
   cargarTareas();
 });

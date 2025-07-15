@@ -315,3 +315,26 @@ ul {
     text-align: center;
   }
 }
+
+#exportar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#exportar button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background-color: #17a2b8;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#exportar button:hover {
+  background-color: #138496;
+}
