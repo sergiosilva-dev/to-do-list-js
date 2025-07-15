@@ -411,3 +411,20 @@ ul {
   font-size: 1rem;
   outline: none;
 }
+
+.tarea.prioridad-alta {
+  border-left: 6px solid #e74c3c;
+}
+.tarea.prioridad-media {
+  border-left: 6px solid #f1c40f;
+}
+.tarea.prioridad-baja {
+  border-left: 6px solid #2ecc71;
+}
+
+#select-prioridad {
+  margin-left: 0.5rem;
+  padding: 0.4rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}

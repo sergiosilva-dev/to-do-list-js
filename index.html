@@ -41,9 +41,15 @@ Descripción: Estructura base del proyecto To-Do List sin frameworks (HTML, CSS,
 
             <!-- Formulario -->
             <form id="form-tarea" aria-labelledby="titulo" role="form">
-                <input type="text" id="input-tarea" placeholder="Escribe una nueva tarea..."
-                    aria-label="Campo para nueva tarea" required />
-                <button type="submit" aria-label="Agregar tarea">Agregar</button>
+                <input type="text" id="input-tarea" placeholder="Escribe una tarea..." />
+
+                <select id="select-prioridad" aria-label="Seleccionar prioridad">
+                    <option value="media" selected>Media</option>
+                    <option value="alta">Alta 🔴</option>
+                    <option value="baja">Baja 🟢</option>
+                </select>
+
+                <button type="submit">Agregar</button>
             </form>
 
             <!-- Acciones y filtros -->

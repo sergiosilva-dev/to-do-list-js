@@ -59,6 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     inputTarea.classList.remove("input-error");
+    const prioridad = document.getElementById("select-prioridad").value;
+    agregarTarea(texto, false, null, prioridad);
     agregarTarea(texto);
     inputTarea.value = "";
     guardarTareas();
@@ -68,7 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
     inputTarea.classList.remove("input-error");
   });
 
-  function agregarTarea(texto, completada = false, fecha = null) {
+  function agregarTarea(
+    texto,
+    completada = false,
+    fecha = null,
+    prioridad = "media"
+  ) {
     const nuevaTarea = document.createElement("li");
     nuevaTarea.setAttribute(
       "data-fecha",
@@ -78,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
           timeStyle: "short",
         })
     );
-    nuevaTarea.classList.add("tarea");
+    nuevaTarea.classList.add(`prioridad-${prioridad}`);
     nuevaTarea.setAttribute("draggable", true);
     if (completada) nuevaTarea.classList.add("completada");
 
@@ -160,15 +167,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const texto = tarea.querySelector(".texto-tarea").textContent;
       const completada = tarea.classList.contains("completada");
       const fecha = tarea.getAttribute("data-fecha");
-      tareas.push({ texto, completada, fecha });
+      const prioridad = tarea.classList.contains("prioridad-alta")
+        ? "alta"
+        : tarea.classList.contains("prioridad-baja")
+        ? "baja"
+        : "media";
+      tareas.push({ texto, completada, fecha, prioridad });
     });
     localStorage.setItem("tareas", JSON.stringify(tareas));
   }
 
   function cargarTareas() {
     const tareasGuardadas = JSON.parse(localStorage.getItem("tareas")) || [];
-    tareasGuardadas.forEach(({ texto, completada, fecha }) => {
-      agregarTarea(texto, completada, fecha);
+    tareasGuardadas.forEach(({ texto, completada, fecha, prioridad }) => {
+      agregarTarea(texto, completada, fecha, prioridad);
     });
     actualizarContador();
   }
